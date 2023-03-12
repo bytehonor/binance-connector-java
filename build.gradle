@@ -4,8 +4,8 @@ plugins {
 }
 
 group = 'com.bytehonor.sdk'
-version = '0.1.0'
-description = 'binance-connector-java-2.0.0rc1'
+version = '2.0.0rc2'
+description = 'binance-connector-java-2.0.0rc2'
 java.sourceCompatibility = 1.8
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
