@@ -1,17 +1,21 @@
 package unit.spot.trade;
 
-import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.impl.SpotClientImpl;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockWebServer;
-import org.junit.Before;
-import org.junit.Test;
-import unit.MockData;
-import unit.MockWebServerDispatcher;
+import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.enums.HttpMethod;
+import com.binance.connector.client.impl.SpotClientImpl;
+
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockWebServer;
+import unit.MockData;
+import unit.MockWebServerDispatcher;
 
 public class TestGetOcoOrders {
     private MockWebServer mockWebServer;
@@ -32,12 +36,12 @@ public class TestGetOcoOrders {
     @Test
     public void testGetOcoOrdersWithoutParams() {
         String path = "/api/v3/allOrderList";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createTrade().getOCOOrders(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -45,7 +49,7 @@ public class TestGetOcoOrders {
     @Test
     public void testGetOcoOrdersWithParams() {
         String path = String.format("/api/v3/allOrderList?fromId=123&startTime=%s&endTime=%s&limit=10", startTime, endTime);
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("fromId", fromId);
         parameters.put("startTime", startTime);
         parameters.put("endTime", endTime);
@@ -54,7 +58,7 @@ public class TestGetOcoOrders {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createTrade().getOCOOrders(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }

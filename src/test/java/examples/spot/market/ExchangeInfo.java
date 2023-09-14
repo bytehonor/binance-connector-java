@@ -1,18 +1,21 @@
 package examples.spot.market;
 
-import com.binance.connector.client.impl.SpotClientImpl;
-import com.binance.connector.client.impl.spot.Market;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.impl.SpotClientImpl;
+import com.binance.connector.client.impl.spot.Market;
 
 public final class ExchangeInfo {
     private ExchangeInfo() {
     }
 
     public static void main(String[] args) {
-        SpotClientImpl client = new SpotClientImpl();
+        SpotClient client = new SpotClientImpl();
         Market market = client.createMarket();
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         String result = market.exchangeInfo(parameters);
         System.out.println(result);

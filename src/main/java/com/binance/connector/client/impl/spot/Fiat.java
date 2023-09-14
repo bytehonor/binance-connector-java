@@ -1,12 +1,13 @@
 package com.binance.connector.client.impl.spot;
 
+import java.util.Map;
+
 import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.utils.HmacSignatureGenerator;
 import com.binance.connector.client.utils.ParameterChecker;
 import com.binance.connector.client.utils.ProxyAuth;
 import com.binance.connector.client.utils.RequestHandler;
-import com.binance.connector.client.utils.SignatureGenerator;
-import java.util.LinkedHashMap;
+import com.binance.connector.client.utils.signaturegenerator.HmacSignatureGenerator;
+import com.binance.connector.client.utils.signaturegenerator.SignatureGenerator;
 
 /**
  * <h2>Fiat Endpoints</h2>
@@ -38,7 +39,7 @@ public class Fiat {
      * GET /sapi/v1/fiat/orders
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * transactionType -- mandatory/string -- 0-deposit,1-withdraw <br>
@@ -51,7 +52,7 @@ public class Fiat {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-fiat-deposit-withdraw-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-fiat-deposit-withdraw-history-user_data</a>
      */
-    public String orders(LinkedHashMap<String, Object> parameters) {
+    public String orders(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "transactionType", String.class);
         return requestHandler.sendSignedRequest(baseUrl, ORDERS, parameters, HttpMethod.GET, showLimitUsage);
     }
@@ -61,7 +62,7 @@ public class Fiat {
      * GET /sapi/v1/fiat/payments
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * transactionType -- mandatory/string -- 0-buy,1-sell <br>
@@ -74,7 +75,7 @@ public class Fiat {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-fiat-payments-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-fiat-payments-history-user_data</a>
      */
-    public String payments(LinkedHashMap<String, Object> parameters) {
+    public String payments(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "transactionType", String.class);
         return requestHandler.sendSignedRequest(baseUrl, PAYMENTS, parameters, HttpMethod.GET, showLimitUsage);
     }

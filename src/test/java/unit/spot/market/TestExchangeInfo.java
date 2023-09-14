@@ -1,21 +1,25 @@
 package unit.spot.market;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.enums.HttpMethod;
 import com.binance.connector.client.exceptions.BinanceConnectorException;
 import com.binance.connector.client.impl.SpotClientImpl;
 import com.binance.connector.client.utils.UrlBuilder;
+
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.Before;
-import org.junit.Test;
 import unit.MockData;
 import unit.MockWebServerDispatcher;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 public class TestExchangeInfo {
     private MockWebServer mockWebServer;
@@ -30,12 +34,12 @@ public class TestExchangeInfo {
     @Test
     public void testExchangeInfo() {
         String path = "/api/v3/exchangeInfo";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         String result = client.createMarket().exchangeInfo(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -43,13 +47,13 @@ public class TestExchangeInfo {
     @Test
     public void testExchangeInfoWithOneSymbol() {
         String path = "/api/v3/exchangeInfo?symbol=BNBUSD";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", "BNBUSDT");
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         String result = client.createMarket().exchangeInfo(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -58,7 +62,7 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithMultipleSymbol() {
         String path = String.format("/api/v3/exchangeInfo?symbols=%s",
                                     UrlBuilder.urlEncode("[\"BNBUSDT\",\"BTCUSDT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         ArrayList<String> symbols = new ArrayList<>();
         symbols.add("BNBUSDT");
         symbols.add("BTCUSDT");
@@ -67,7 +71,7 @@ public class TestExchangeInfo {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         String result = client.createMarket().exchangeInfo(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -76,7 +80,7 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithOnePermission() {
         String path = String.format("/api/v3/exchangeInfo?permissions=%s",
                                     UrlBuilder.urlEncode("[\"MARGIN\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         ArrayList<String> permissions = new ArrayList<>();
         permissions.add("MARGIN");
         parameters.put("permissions", permissions);
@@ -84,7 +88,7 @@ public class TestExchangeInfo {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         String result = client.createMarket().exchangeInfo(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -93,7 +97,7 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithMultiplePermissions() {
         String path = String.format("/api/v3/exchangeInfo?permissions=%s",
                                     UrlBuilder.urlEncode("[\"MARGIN\",\"SPOT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         ArrayList<String> permissions = new ArrayList<>();
         permissions.add("MARGIN");
         permissions.add("SPOT");
@@ -102,7 +106,7 @@ public class TestExchangeInfo {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         String result = client.createMarket().exchangeInfo(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -112,14 +116,14 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithInvalidType() {
         String path = String.format("/api/v3/exchangeInfo?symbols=%s",
                                     UrlBuilder.urlEncode("[\"BNBUSDT\",\"BTCUSDT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         String[] symbols = {"BNBUSDT", "BTCUSDT"};
         parameters.put("symbols", symbols);
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         assertThrows(BinanceConnectorException.class, () -> client.createMarket().exchangeInfo(parameters));
     }
 
@@ -127,14 +131,14 @@ public class TestExchangeInfo {
     public void testExchangeInfoPermissionsWithInvalidType() {
         String path = String.format("/api/v3/exchangeInfo?permissions=%s",
                                     UrlBuilder.urlEncode("[\"MARGIN\",\"SPOT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         String[] permissions = {"MARGIN", "SPOT"};
         parameters.put("permissions", permissions);
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         assertThrows(BinanceConnectorException.class, () -> client.createMarket().exchangeInfo(parameters));
     }
 
@@ -142,7 +146,7 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithDoubleParameter() {
         String path = String.format("/api/v3/exchangeInfo?symbols=%s",
                     UrlBuilder.urlEncode("[\"BNBUSDT\",\"BTCUSDT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         ArrayList<String> symbols = new ArrayList<>();
         symbols.add("BNBUSDT");
         symbols.add("BTCUSDT");
@@ -153,7 +157,7 @@ public class TestExchangeInfo {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         assertThrows(BinanceConnectorException.class, () -> client.createMarket().exchangeInfo(parameters));
     }
 
@@ -161,7 +165,7 @@ public class TestExchangeInfo {
     public void testExchangeInfoWithSymbolAndPermissionsParameters() {
         String path = String.format("/api/v3/exchangeInfo?symbol=%s",
                 UrlBuilder.urlEncode("[\"ETHUSDT\"]"));
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         
         ArrayList<String> permissions = new ArrayList<>();
         permissions.add("MARGIN");
@@ -173,7 +177,7 @@ public class TestExchangeInfo {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(baseUrl);
+        SpotClient client = new SpotClientImpl(baseUrl);
         assertThrows(BinanceConnectorException.class, () -> client.createMarket().exchangeInfo(parameters));
     }
 }

@@ -1,18 +1,23 @@
 package unit.spot.cryptoloans;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.enums.HttpMethod;
 import com.binance.connector.client.exceptions.BinanceConnectorException;
 import com.binance.connector.client.impl.SpotClientImpl;
-import java.util.LinkedHashMap;
+
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.Before;
-import org.junit.Test;
 import unit.MockData;
 import unit.MockWebServerDispatcher;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 public class TestCustomizeMarginCall {
     private MockWebServer mockWebServer;
@@ -31,26 +36,26 @@ public class TestCustomizeMarginCall {
     @Test
     public void testCustomizeMarginCallWithoutParameters() {
         String path = "/sapi/v1/loan/customize/margin_call";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.POST, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         assertThrows(BinanceConnectorException.class, () -> client.createCryptoLoans().collateralRepayRate(parameters));
     }
 
     @Test
     public void testCustomizeMarginCall() {
         String path = "/sapi/v1/loan/customize/margin_call";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("orderId", orderId);
         parameters.put("marginCall", marginCall);
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.POST, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createCryptoLoans().customizeMarginCall(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }

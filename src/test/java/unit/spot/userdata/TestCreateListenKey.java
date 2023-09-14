@@ -1,12 +1,16 @@
 package unit.spot.userdata;
 
-import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.impl.SpotClientImpl;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockWebServer;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.enums.HttpMethod;
+import com.binance.connector.client.impl.SpotClientImpl;
+
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockWebServer;
 import unit.MockData;
 import unit.MockWebServerDispatcher;
 
@@ -29,7 +33,7 @@ public class TestCreateListenKey {
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MOCK_RESPONSE, HttpMethod.POST, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createUserData().createListenKey();
         assertEquals(MOCK_RESPONSE, result);
     }

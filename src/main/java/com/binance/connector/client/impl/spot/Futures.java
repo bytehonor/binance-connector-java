@@ -1,12 +1,13 @@
 package com.binance.connector.client.impl.spot;
 
+import java.util.Map;
+
 import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.utils.HmacSignatureGenerator;
 import com.binance.connector.client.utils.ParameterChecker;
 import com.binance.connector.client.utils.ProxyAuth;
 import com.binance.connector.client.utils.RequestHandler;
-import com.binance.connector.client.utils.SignatureGenerator;
-import java.util.LinkedHashMap;
+import com.binance.connector.client.utils.signaturegenerator.HmacSignatureGenerator;
+import com.binance.connector.client.utils.signaturegenerator.SignatureGenerator;
 
 /**
  * <h2>Futures Endpoints</h2>
@@ -40,7 +41,7 @@ public class Futures {
      * POST /sapi/v1/futures/transfer
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * asset -- mandatory/string -- The asset being transferred, e.g. USDT <br>
@@ -54,7 +55,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#new-future-account-transfer-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#new-future-account-transfer-user_data</a>
      */
-    public String futuresTransfer(LinkedHashMap<String, Object> parameters) {
+    public String futuresTransfer(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "asset", String.class);
         ParameterChecker.checkRequiredParameter(parameters, "amount");
         ParameterChecker.checkParameter(parameters, "type", Integer.class);
@@ -65,7 +66,7 @@ public class Futures {
      * GET /sapi/v1/futures/transfer
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * asset -- mandatory/string -- The asset being transferred, e.g. USDT <br>
@@ -78,7 +79,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-future-account-transaction-history-list-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-future-account-transaction-history-list-user_data</a>
      */
-    public String futuresTransferHistory(LinkedHashMap<String, Object> parameters) {
+    public String futuresTransferHistory(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "asset", String.class);
         ParameterChecker.checkParameter(parameters, "startTime", Long.class);
         return requestHandler.sendSignedRequest(baseUrl, FUTURES_TRANSFER, parameters, HttpMethod.GET, showLimitUsage);
@@ -89,7 +90,7 @@ public class Futures {
      * GET /sapi/v1/futures/loan/borrow/history
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * coin -- optional/string <br>
@@ -101,7 +102,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-borrow-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-borrow-history-user_data</a>
      */
-    public String borrowHistory(LinkedHashMap<String, Object> parameters) {
+    public String borrowHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, BORROW_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -110,7 +111,7 @@ public class Futures {
      * GET /sapi/v1/futures/loan/repay/history
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * coin -- optional/string <br>
@@ -122,7 +123,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-repayment-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-repayment-history-user_data</a>
      */
-    public String repayHistory(LinkedHashMap<String, Object> parameters) {
+    public String repayHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, REPAY_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -131,7 +132,7 @@ public class Futures {
      * GET /sapi/v2/futures/loan/wallet
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * recvWindow -- optional/long <br>
@@ -139,7 +140,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-wallet-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-wallet-user_data</a>
      */
-    public String loanWallet(LinkedHashMap<String, Object> parameters) {
+    public String loanWallet(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, WALLET, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -148,7 +149,7 @@ public class Futures {
      * GET /sapi/v1/futures/loan/adjustCollateral/history
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * loanCoin -- optional/string <br>
@@ -161,7 +162,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#adjust-cross-collateral-ltv-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#adjust-cross-collateral-ltv-history-user_data</a>
      */
-    public String adjustCollateralHistory(LinkedHashMap<String, Object> parameters) {
+    public String adjustCollateralHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, ADJUST_COLLATERAL_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -170,7 +171,7 @@ public class Futures {
      * GET /sapi/v1/futures/loan/liquidationHistory
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * loanCoin -- optional/string <br>
@@ -183,7 +184,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-liquidation-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-liquidation-history-user_data</a>
      */
-    public String liquidationHistory(LinkedHashMap<String, Object> parameters) {
+    public String liquidationHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, LIQUIDATION_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -192,7 +193,7 @@ public class Futures {
      * GET /sapi/v1/futures/loan/interestHistory
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * collateralCoin -- optional/string <br>
@@ -205,7 +206,7 @@ public class Futures {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-interest-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#cross-collateral-interest-history-user_data</a>
      */
-    public String interestHistory(LinkedHashMap<String, Object> parameters) {
+    public String interestHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, INTEREST_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 }

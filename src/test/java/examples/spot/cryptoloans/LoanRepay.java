@@ -1,9 +1,12 @@
 package examples.spot.cryptoloans;
 
-import com.binance.connector.client.impl.SpotClientImpl;
-import examples.PrivateConfig;
-
 import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.impl.SpotClientImpl;
+
+import examples.PrivateConfig;
 
 public final class LoanRepay {
 
@@ -14,11 +17,11 @@ public final class LoanRepay {
     private static final double amount = 0.01;
 
     public static void main(String[] args) {
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("orderId", orderId);
         parameters.put("amount", amount);
         
-        SpotClientImpl client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
+        SpotClient client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
         String result = client.createCryptoLoans().loanRepay(parameters);
         System.out.println(result);
     }

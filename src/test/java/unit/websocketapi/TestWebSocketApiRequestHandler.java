@@ -1,13 +1,15 @@
 package unit.websocketapi;
 
-import com.binance.connector.client.exceptions.BinanceConnectorException;
-import com.binance.connector.client.utils.websocketapi.WebSocketApiRequestHandler;
-import unit.MockData;
+import static org.junit.Assert.assertThrows;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThrows;
+import com.binance.connector.client.exceptions.BinanceConnectorException;
+import com.binance.connector.client.utils.websocketapi.WebSocketApiRequestHandler;
+
+import unit.MockData;
 
 public class TestWebSocketApiRequestHandler {
 
@@ -38,7 +40,6 @@ public class TestWebSocketApiRequestHandler {
         assertThrows(BinanceConnectorException.class, () -> handlerWithoutApiKey.apiRequest("trades.historical", params));
     }
 
-
     @Test
     public void testSignedRequestWithoutMandatoryParams() {
         WebSocketApiRequestHandler handler = new WebSocketApiRequestHandler(MockData.WS_CONNECTION, MockData.API_KEY, MockData.HMAC_SIGNATURE_GENERATOR);
@@ -50,7 +51,6 @@ public class TestWebSocketApiRequestHandler {
         WebSocketApiRequestHandler handlerWithoutsignGenerator = new WebSocketApiRequestHandler(MockData.WS_CONNECTION, MockData.API_KEY, null);
         assertThrows(BinanceConnectorException.class, () -> handlerWithoutsignGenerator.signedRequest("order.test", params));
     }
-
 
     @Test
     public void testRequestWithInvalidRequestId() {

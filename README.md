@@ -71,15 +71,15 @@ to call its respective endpoints.
 
 #### Market Endpoint: Exchange Information
 ```java
-SpotClientImpl client = new SpotClientImpl();
+SpotClient client = new SpotClientImpl();
 String result = client.createMarket().exchangeInfo();
 ```
 
 #### Trade Endpoint: Testing a new order
 ```java
-LinkedHashMap<String,Object> parameters = new LinkedHashMap<String,Object>();
+Map<String,Object> parameters = new LinkedHashMap<String,Object>();
 
-SpotClientImpl client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
+SpotClient client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
 
 parameters.put("symbol","BTCUSDT");
 parameters.put("side", "SELL");
@@ -91,33 +91,91 @@ parameters.put("price", 9500);
 String result = client.createTrade().testNewOrder(parameters);
 ```
 
+### WebSocket Stream
+
+```java
+WebSocketStreamClient wsStreamClient = new WebSocketStreamClientImpl(); // defaults to live exchange unless stated.
+
+// Single stream
+int streamID1 = wsStreamClient.aggTradeStream("btcusdt",((event) -> {
+    System.out.println(event);
+}));
+
+// Combined streams
+ArrayList<String> streams = new ArrayList<>();
+streams.add("btcusdt@trade");
+streams.add("bnbusdt@trade");
+
+int streamID2 = wsStreamClient.combineStreams(streams, ((event) -> {
+    System.out.println(event);
+}));
+
+// Close single stream
+wsStreamClient.closeConnection(streamID1); //closes aggTradeStream-btcusdt
+        
+// Close all streams
+wsStreamClient.closeAllConnections();
+```
+
+Different types of WebSocket callbacks are available. Please refer to the `src/test/java/examples/websocketstream/TradeStreamWithAllCallbacks.java` example file to explore their usage.
+
+More examples are available at `src/test/java/examples/websocketstream` folder.
+
+### WebSocket API
+
+```java
+RsaSignatureGenerator signatureGenerator =  new RsaSignatureGenerator("PRIVATE_KEY_PATH");
+WebSocketApiClient wsApiClient = new WebSocketApiClientImpl("API_KEY", signatureGenerator); // defaults to live exchange unless stated.
+
+// Open connection with a callback as parameter
+wsApiClient.connect(((message) -> {
+    System.out.println(message);
+}));
+
+JSONObject optionalParams = new JSONObject();
+optionalParams.put("requestId", "request123");
+optionalParams.put("quantity", 1);
+
+wsApiClient.trade().testNewOrder("BTCUSDT", "BUY", "MARKET", optionalParams);
+
+Thread.sleep(3000);
+
+// Close connection
+wsApiClient.close();
+```
+
+If `requestId` is empty (`""`), `null` or not sent, this library will generate a `UUID` string for it. 
+
+Different types of WebSocket callbacks are available. Please refer to the `src/test/java/examples/websocketapi/WsApiwithAllCallbacks.java` example file to explore their usage.
+
+More examples are available at `src/test/java/examples/websocketapi` folder.
+
 ### Testnet
 
 While `/sapi/*` endpoints don't have testnet environment yet, `/api/*` endpoints can be tested in
 [Spot Testnet](https://testnet.binance.vision/). You can use it by changing the base URL:
 
 ```java
-LinkedHashMap<String,Object> parameters = new LinkedHashMap<>();
+Map<String,Object> parameters = new LinkedHashMap<>();
 
-SpotClientImpl client = new SpotClientImpl(PrivateConfig.TESTNET_API_KEY, PrivateConfig.TESTNET_SECRET_KEY, PrivateConfig.TESTNET_URL);
+SpotClient client = new SpotClientImpl(PrivateConfig.TESTNET_API_KEY, PrivateConfig.TESTNET_SECRET_KEY, PrivateConfig.TESTNET_URL);
 String result = client.createMarket().time();
 ```
 
 ### Base URL
 
 If `baseUrl` is not provided, it defaults to `api.binance.com`.<br/>
-It's recommended to pass in the `baseUrl` parameter, even in production as Binance provides alternative URLs
-in case of performance issues:
+It's recommended to pass in the `baseUrl` parameter, even in production as Binance provides alternative URLs:
 - `https://api1.binance.com`
 - `https://api2.binance.com`
 - `https://api3.binance.com`
+- `https://api4.binance.com`
 
 ### Optional parameters
 
-All parameters are read from a `LinkedHashMap<String,Object>` object where `String` is the
-name of the parameter and `Object` is the value of the parameter. The parameters should follow their exact naming as in the API documentation.<br>
+All parameters are read from a `Map<String, Object>` implemented data structure where `String` is the name of the parameter and `Object` is the value of the parameter. The parameters should follow their exact naming as in the API documentation.<br>
 ```java
-LinkedHashMap<String,Object> parameters = new LinkedHashMap<String,Object>();
+Map<String,Object> parameters = new LinkedHashMap<String,Object>();
 
 parameters.put("symbol","BTCUSDT");
 parameters.put("side", "SELL");
@@ -132,7 +190,7 @@ parameters.put("price", 9500);
 The Binance API server provides weight usages in the headers of each response. This value can be return by 
 calling `setShowLimitUsage` and setting it to `true`.
 ```java
-SpotClientImpl client = new SpotClientImpl();
+SpotClient client = new SpotClientImpl();
 client.setShowLimitUsage(true);
 String result = client.createMarket().time();
 logger.info(result);
@@ -148,7 +206,7 @@ HTTP Proxy is supported.
 To set it up, call `setProxy()` with `ProxyAuth` and before submitting requests to binance:
 
 ```java
-SpotClientImpl client = new SpotClientImpl();
+SpotClient client = new SpotClientImpl();
 Proxy proxyConn = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
 ProxyAuth proxy = new ProxyAuth(proxyConn, null);
 
@@ -159,7 +217,7 @@ logger.info(client.createMarket().time());
 For authenticated `Proxy`, define `ProxyAuth` with [`Authenticator` from `okhttp3`](https://square.github.io/okhttp/3.x/okhttp/index.html?okhttp3/Authenticator.html):
 
 ```java
-SpotClientImpl client = new SpotClientImpl();
+SpotClient client = new SpotClientImpl();
 Proxy proxyConn = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
 Authenticator auth = new Authenticator() {
     public Request authenticate(Route route, Response response) throws IOException {
@@ -185,7 +243,7 @@ client.unsetProxy();
 logger.info(client.createMarket().time());
 ```
 
-Complete examples are available at `test/examples/proxy` folder.
+Complete examples are available at `src/test/java/examples/spot/proxy` folder.
 
 ### Logging
 This connector uses [`SLF4J`](https://www.slf4j.org/) as an abstraction layer for diverse logging frameworks.
@@ -199,7 +257,32 @@ SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
 ```
 
+In case you want to use our custom `logback-classic`, it's available at [`binance-logback`](https://central.sonatype.com/artifact/io.github.binance/binance-logback).
+
 If you prefer to not use a logger and suppress the `SLF4J` messages instead, you can refer to `slf4j-nop`.
+
+### Types of Signature Generator
+When creating `SpotClient`, `WebSocketStreamClient` or `WebSocketApiClient`, you use one of the following types of Signature Generator to create signatures (for SIGNED endpoints) based on your security preference:
+
+- `HmacSignatureGenerator` - Use of API Key and Secret Key.
+```java
+  HmacSignatureGenerator signGenerator = new HmacSignatureGenerator("SecretKey");
+  SpotClient client = new SpotClientImpl("ApiKey", signGenerator);
+```
+
+- `RsaSignatureGenerator` - Use of API Key and RSA algorithm keys.
+```java
+  RsaSignatureGenerator signGenerator =  new RsaSignatureGenerator("PathToPrivateKey"); 
+  // or if Private Key is protected
+  // RsaSignatureGenerator signGenerator = new RsaSignatureGenerator("PathToPrivateKey", "PrivateKeyPassword")
+  SpotClient client = new SpotClientImpl("ApiKey", signGenerator);
+```
+
+- `Ed25519SignatureGenerator` - Use of API Key and Ed25519 algorithm keys.
+```java
+  Ed25519SignatureGenerator signGenerator =  new Ed25519SignatureGenerator("PathToPrivateKey");
+  SpotClient client = new SpotClientImpl("ApiKey", signGenerator);
+```
 
 ### Error
 
@@ -226,61 +309,6 @@ try {
       e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
     }
 ```
-
-### Websocket Stream
-
-```java
-WebsocketStreamClientImpl wsStreamClient = new WebsocketStreamClientImpl(); // defaults to live exchange unless stated.
-
-// Single stream
-int streamID1 = wsStreamClient.aggTradeStream("btcusdt",((event) -> {
-    System.out.println(event);
-}));
-
-// Combined streams
-ArrayList<String> streams = new ArrayList<>();
-streams.add("btcusdt@trade");
-streams.add("bnbusdt@trade");
-
-int streamID2 = wsStreamClient.combineStreams(streams, ((event) -> {
-    System.out.println(event);
-}));
-
-// Close single stream
-wsStreamClient.closeConnection(streamID1); //closes aggTradeStream-btcusdt
-        
-// Close all streams
-wsStreamClient.closeAllConnections();
-```
-
-More examples are available at `test/examples/websocketstream` folder
-
-### Websocket API
-
-```java
-RsaSignatureGenerator signatureGenerator =  new RsaSignatureGenerator("PRIVATE_KEY_PATH");
-WebsocketApiClientImpl wsApiClient = new WebsocketApiClientImpl("API_KEY", signatureGenerator); // defaults to live exchange unless stated.
-
-// Open connection with a callback as parameter
-wsApiClient.connect(((message) -> {
-    System.out.println(message);
-}));
-
-JSONObject optionalParams = new JSONObject();
-optionalParams.put("requestId", "request123");
-optionalParams.put("quantity", 1);
-
-wsApiClient.trade().testNewOrder("BTCUSDT", "BUY", "MARKET", optionalParams);
-
-Thread.sleep(3000);
-
-// Close connection
-wsApiClient.close();
-
-```
-If `requestId` is empty (`""`), `null` or not sent, this library will generate a `UUID` string for it. 
-
-More examples are available at `test/examples/websocketapi` folder
 
 ### Test
 `mvn clean test`

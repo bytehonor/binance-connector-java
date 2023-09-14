@@ -1,12 +1,13 @@
 package com.binance.connector.client.impl.spot;
 
+import java.util.Map;
+
 import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.utils.HmacSignatureGenerator;
 import com.binance.connector.client.utils.ParameterChecker;
 import com.binance.connector.client.utils.ProxyAuth;
 import com.binance.connector.client.utils.RequestHandler;
-import com.binance.connector.client.utils.SignatureGenerator;
-import java.util.LinkedHashMap;
+import com.binance.connector.client.utils.signaturegenerator.HmacSignatureGenerator;
+import com.binance.connector.client.utils.signaturegenerator.SignatureGenerator;
 
 /**
  * <h2>NFT Endpoints</h2>
@@ -38,7 +39,7 @@ public class NFT {
      * GET /sapi/v1/pay/transactions
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * orderType -- mandatory/int -- 0: purchase order, 1: sell order, 2: royalty income,
@@ -52,7 +53,7 @@ public class NFT {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-nft-transaction-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-nft-transaction-history-user_data</a>
      */
-    public String transactionsHistory(LinkedHashMap<String, Object> parameters) {
+    public String transactionsHistory(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "orderType", Integer.class);
         return requestHandler.sendSignedRequest(baseUrl, TRANSACTIONS, parameters, HttpMethod.GET, showLimitUsage);
     }
@@ -62,7 +63,7 @@ public class NFT {
      * GET /sapi/v1/nft/history/deposit
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * startTime -- optional/long <br>
@@ -74,7 +75,7 @@ public class NFT {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-nft-deposit-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-nft-deposit-history-user_data</a>
      */
-    public String depositHistory(LinkedHashMap<String, Object> parameters) {
+    public String depositHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, DEPOSIT, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -83,7 +84,7 @@ public class NFT {
      * GET /sapi/v1/nft/history/withdraw
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * startTime -- optional/long <br>
@@ -95,7 +96,7 @@ public class NFT {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-nft-withdraw-history-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-nft-withdraw-history-user_data</a>
      */
-    public String withdrawHistory(LinkedHashMap<String, Object> parameters) {
+    public String withdrawHistory(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, WITHDRAW, parameters, HttpMethod.GET, showLimitUsage);
     }
 
@@ -104,7 +105,7 @@ public class NFT {
      * GET /sapi/v1/nft/user/getAsset
      * <br>
      * @param
-     * parameters LinkedHashedMap of String,Object pair
+     * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * limit -- optional/int -- Default 50, Max 50 <br>
@@ -114,7 +115,7 @@ public class NFT {
      * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-nft-asset-user_data">
      *     https://binance-docs.github.io/apidocs/spot/en/#get-nft-asset-user_data</a>
      */
-    public String getAsset(LinkedHashMap<String, Object> parameters) {
+    public String getAsset(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, GET_ASSET, parameters, HttpMethod.GET, showLimitUsage);
     }
 }

@@ -1,7 +1,8 @@
 package examples.websocketapi.general;
 
-import com.binance.connector.client.impl.WebsocketApiClientImpl;
-import com.binance.connector.client.utils.WebSocketCallback;
+import com.binance.connector.client.WebSocketApiClient;
+import com.binance.connector.client.impl.WebSocketApiClientImpl;
+import com.binance.connector.client.utils.websocketcallback.WebSocketMessageCallback;
 
 public final class ServerTime {
     private ServerTime() {
@@ -10,9 +11,9 @@ public final class ServerTime {
     private static final int waitTime = 3000;
 
     public static void main(String[] args) throws InterruptedException {
-        WebsocketApiClientImpl client = new WebsocketApiClientImpl();
+        WebSocketApiClient client = new WebSocketApiClientImpl();
 
-        WebSocketCallback onMessageCallback = (event) -> {
+        WebSocketMessageCallback onMessageCallback = (event) -> {
             System.out.println(event);
         };
 

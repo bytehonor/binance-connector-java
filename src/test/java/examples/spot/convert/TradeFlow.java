@@ -1,9 +1,12 @@
 package examples.spot.convert;
 
-import com.binance.connector.client.impl.SpotClientImpl;
-import examples.PrivateConfig;
-
 import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.impl.SpotClientImpl;
+
+import examples.PrivateConfig;
 
 public final class TradeFlow {
     private TradeFlow() {
@@ -12,12 +15,12 @@ public final class TradeFlow {
     private static final long endTime = 12345678L;
 
     public static void main(String[] args) {
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         parameters.put("startTime", startTime);
         parameters.put("endTime", endTime);
 
-        SpotClientImpl client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
+        SpotClient client = new SpotClientImpl(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY);
         String result = client.createConvert().tradeFlow(parameters);
         System.out.println(result);
     }

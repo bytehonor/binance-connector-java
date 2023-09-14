@@ -1,13 +1,19 @@
 package unit.spot.trade;
 
-import com.binance.connector.client.enums.HttpMethod;
-import com.binance.connector.client.impl.SpotClientImpl;
-import java.util.LinkedHashMap;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockWebServer;
 import static org.junit.Assert.assertEquals;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.enums.HttpMethod;
+import com.binance.connector.client.impl.SpotClientImpl;
+
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockWebServer;
 import unit.MockData;
 import unit.MockWebServerDispatcher;
 
@@ -26,12 +32,12 @@ public class TestGetOpenOrders {
     @Test
     public void testGetOpenOrdersWithoutParams() {
         String path = "/api/v3/openOrders";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createTrade().getOpenOrders(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
@@ -39,14 +45,14 @@ public class TestGetOpenOrders {
     @Test
     public void testGetOpenOrdersWithParams() {
         String path = "/api/v3/openOrders?symbol=BNBUSDT&recvWindow=1000";
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", "BNBUSDT");
         parameters.put("recvWindow", recvWindow);
 
         Dispatcher dispatcher = MockWebServerDispatcher.getDispatcher(MockData.PREFIX, path, MockData.MOCK_RESPONSE, HttpMethod.GET, MockData.HTTP_STATUS_OK);
         mockWebServer.setDispatcher(dispatcher);
 
-        SpotClientImpl client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
+        SpotClient client = new SpotClientImpl(MockData.API_KEY, MockData.SECRET_KEY, baseUrl);
         String result = client.createTrade().getOpenOrders(parameters);
         assertEquals(MockData.MOCK_RESPONSE, result);
     }
