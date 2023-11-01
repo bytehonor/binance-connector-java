@@ -15,13 +15,13 @@ repositories {
 }
 
 dependencies {
-    api('com.squareup.okhttp3:okhttp:4.11.0')
+    api('com.squareup.okhttp3:okhttp:4.12.0')
     api('commons-codec:commons-codec:1.15')
     api('org.json:json:20230227')
     api('org.bouncycastle:bcprov-jdk18on:1.76')
-    implementation('org.slf4j:slf4j-api:1.7.36')
-    implementation('ch.qos.logback:logback-classic:1.2.12')
-    testImplementation('com.squareup.okhttp3:mockwebserver:4.11.0')
+    implementation('org.slf4j:slf4j-api:2.0.9')
+    implementation('ch.qos.logback:logback-classic:1.4.11')
+    testImplementation('com.squareup.okhttp3:mockwebserver:4.12.0')
     testImplementation('org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2')
     testImplementation('junit:junit:4.13.2')
 }
