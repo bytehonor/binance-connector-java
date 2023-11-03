@@ -17,7 +17,7 @@ repositories {
 dependencies {
     api('com.squareup.okhttp3:okhttp:4.12.0')
     api('commons-codec:commons-codec:1.15')
-    api('org.json:json:20230227')
+    api('org.json:json:20231013')
     api('org.bouncycastle:bcprov-jdk18on:1.76')
     implementation('org.slf4j:slf4j-api:1.7.36')
     implementation('ch.qos.logback:logback-classic:1.2.12')
@@ -45,9 +45,7 @@ publishing {
     }
     repositories {
         maven {
-            //指定要上传的maven私服仓库
             url = "https://maven.huajietaojin.cn/repository/bytehonor/"
-            //认证用户和密码
             credentials {
                 username 'bytehonor'
                 password 'permit'
