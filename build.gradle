@@ -6,9 +6,11 @@ plugins {
 group = 'com.bytehonor.sdk'
 version = '3.0.0rc3'
 description = 'binance-connector-java-3.0.0rc3'
-sourceCompatibility = 1.8
 
-[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+java {
+    sourceCompatibility = 17
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -19,8 +21,8 @@ dependencies {
     api('commons-codec:commons-codec:1.15')
     api('org.json:json:20231013')
     api('org.bouncycastle:bcprov-jdk18on:1.76')
-    implementation('org.slf4j:slf4j-api:1.7.36')
-    implementation('ch.qos.logback:logback-classic:1.2.12')
+    implementation('org.slf4j:slf4j-api:2.0.13')
+    implementation('ch.qos.logback:logback-classic:1.4.14')
     testImplementation('com.squareup.okhttp3:mockwebserver:4.12.0')
     testImplementation('org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2')
     testImplementation('junit:junit:4.13.2')
@@ -31,10 +33,6 @@ jar {
         attributes('Implementation-Title': project.name,
                    'Implementation-Version': project.version)
     }
-}
-
-java {
-    withSourcesJar()
 }
 
 publishing {
@@ -52,4 +50,8 @@ publishing {
             }
         }
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
