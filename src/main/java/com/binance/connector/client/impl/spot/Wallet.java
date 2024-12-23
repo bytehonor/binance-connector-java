@@ -1,6 +1,5 @@
 package com.binance.connector.client.impl.spot;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import com.binance.connector.client.utils.signaturegenerator.SignatureGenerator;
 /**
  * <h2>Wallet Endpoints</h2>
  * All endpoints under the
- * <a href="https://binance-docs.github.io/apidocs/spot/en/#wallet-endpoints">Wallet Endpoint</a>
+ * <a href="https://developers.binance.com/docs/wallet/introduction">Wallet Endpoint</a>
  * section of the API documentation will be implemented in this class.
  * <br>
  * Response will be returned in <i>String format</i>.
@@ -43,8 +42,8 @@ public class Wallet {
      * GET /sapi/v1/system/status
      * <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#system-status-system">
-     *     https://binance-docs.github.io/apidocs/spot/en/#system-status-system</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/others/system-status">
+     *     https://developers.binance.com/docs/wallet/others/system-status</a>
      */
     public String systemStatus() {
         return requestHandler.sendPublicRequest(baseUrl, SYSTEM_STATUS, null, HttpMethod.GET, showLimitUsage);
@@ -62,15 +61,19 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/all-coins-info">
+     *     https://developers.binance.com/docs/wallet/capital/all-coins-info</a>
      */
     public String coinInfo(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, COIN_INFO, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String ACC_SNAP = "/sapi/v1/accountSnapshot";
+    private final String ACCOUNT_SNAPSHOT = "/sapi/v1/accountSnapshot";
     /**
+     * - The query time period must be less than 30 days
+     * - Support query within the last one month only
+     * - If startTime and endTime are both not sent, records from the last 7 days are returned by default
+     * <br><br>
      * GET /sapi/v1/accountSnapshot
      * <br>
      * @param
@@ -83,16 +86,19 @@ public class Wallet {
      * limit -- optional/int -- min 5, max 30, default 5 <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#daily-account-snapshot-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#daily-account-snapshot-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/daily-account-snapshoot">
+     *     https://developers.binance.com/docs/wallet/account/daily-account-snapshoot</a>
      */
     public String accountSnapshot(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "type", String.class);
-        return requestHandler.sendSignedRequest(baseUrl, ACC_SNAP, parameters, HttpMethod.GET, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, ACCOUNT_SNAPSHOT, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String DISABLE_FAST = "/sapi/v1/account/disableFastWithdrawSwitch";
+    private final String DISABLE_FAST_WITHDRAW = "/sapi/v1/account/disableFastWithdrawSwitch";
     /**
+     * - This request will disable fastwithdraw switch under your account.
+     * - You need to enable "trade" option for the api key which requests this endpoint.
+     * <br><br>
      * POST /sapi/v1/account/disableFastWithdrawSwitch
      * <br>
      * @param
@@ -101,15 +107,18 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#disable-fast-withdraw-switch-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#disable-fast-withdraw-switch-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/disable-fast-withdraw-switch">
+     *     https://developers.binance.com/docs/wallet/account/disable-fast-withdraw-switch</a>
      */
     public String disableFastWithdraw(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, DISABLE_FAST, parameters, HttpMethod.POST, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, DISABLE_FAST_WITHDRAW, parameters, HttpMethod.POST, showLimitUsage);
     }
 
-    private final String ENABLE_FAST = "/sapi/v1/account/enableFastWithdrawSwitch";
+    private final String ENABLE_FAST_WITHDRAW = "/sapi/v1/account/enableFastWithdrawSwitch";
     /**
+     * - This request will enable fastwithdraw switch under your account. You need to enable "trade" option for the api key which requests this endpoint.
+     * - When Fast Withdraw Switch is on, transferring funds to a Binance account will be done instantly. There is no on-chain transaction, no transaction ID and no withdrawal fee.
+     * <br><br>
      * POST /sapi/v1/account/enableFastWithdrawSwitch
      * <br>
      * @param
@@ -118,16 +127,19 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#enable-fast-withdraw-switch-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#enable-fast-withdraw-switch-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/enable-fast-withdraw-switch">
+     *     https://developers.binance.com/docs/wallet/account/enable-fast-withdraw-switch</a>
      */
     public String enableFastWithdraw(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, ENABLE_FAST, parameters, HttpMethod.POST, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, ENABLE_FAST_WITHDRAW, parameters, HttpMethod.POST, showLimitUsage);
     }
 
     private final String WITHDRAW = "/sapi/v1/capital/withdraw/apply";
     /**
      * Submit a withdraw request.
+     * 
+     * - If `network` not send, return with default network of the coin.
+     * - You can get `network` and `isDefault` in `networkList` of a coin in the response of `Get /sapi/v1/capital/config/getall (HMAC SHA256)`.
      * <br><br>
      * POST /sapi/v1/capital/withdraw/apply
      * <br>
@@ -136,7 +148,7 @@ public class Wallet {
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * coin -- mandatory/string <br>
-     * withdrawOrderId -- optional/string -- client id for withdraw <br>
+     * withdrawOrderId -- optional/string -- Client ID for withdraw <br>
      * network -- optional/string <br>
      * address -- mandatory/string <br>
      * addressTag -- optional/string -- Secondary address identifier for coins like XRP,XMR etc. <br>
@@ -147,8 +159,8 @@ public class Wallet {
      * walletType -- optional/int -- The wallet type for withdraw, 0-spot wallet , 1-funding wallet.Default spot wallet <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#withdraw-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#withdraw-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/withdraw">
+     *     https://developers.binance.com/docs/wallet/capital/withdraw</a>
      */
     public String withdraw(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "coin", String.class);
@@ -157,9 +169,12 @@ public class Wallet {
         return requestHandler.sendSignedRequest(baseUrl, WITHDRAW, parameters, HttpMethod.POST, showLimitUsage);
     }
 
-    private final String DEPOSIT_HIST = "/sapi/v1/capital/deposit/hisrec";
+    private final String DEPOSIT_HISTORY = "/sapi/v1/capital/deposit/hisrec";
     /**
      * Fetch deposit history.
+     * 
+     * - Please notice the default `startTime` and `endTime` to make sure that time interval is within 0-90 days.
+     * - If both `startTime` and `endTime` are sent, time between `startTime` and `endTime` must be less than 90 days.
      * <br><br>
      * GET /sapi/v1/capital/deposit/hisrec
      * <br>
@@ -175,16 +190,24 @@ public class Wallet {
      * limit -- optional/int -- Default:1000, Max:1000 <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#deposit-history-supporting-network-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#deposit-history-supporting-network-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/deposite-history">
+     *     https://developers.binance.com/docs/wallet/capital/deposite-history</a>
      */
     public String depositHistory(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, DEPOSIT_HIST, parameters, HttpMethod.GET, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, DEPOSIT_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String WITHDRAW_HIST = "/sapi/v1/capital/withdraw/history";
+    private final String WITHDRAW_HISTORY = "/sapi/v1/capital/withdraw/history";
     /**
      * Fetch withdraw history.
+     * 
+     * This endpoint specifically uses per second UID rate limit, user's total second level IP rate limit is 180000/second. Response from the endpoint contains header key X-SAPI-USED-UID-WEIGHT-1S, which defines weight used by the current IP.
+     * 
+     * - `network` may not be in the response for old withdraw.
+     * - Please notice the default `startTime` and `endTime` to make sure that time interval is within 0-90 days.
+     * - If both `startTime` and `endTime` are sent, time between `startTime` and `endTime` must be less than 90 days
+     * - If withdrawOrderId is sent, time between startTime and endTime must be less than 7 days.
+     * - If withdrawOrderId is sent, startTime and endTime are not sent, will return last 7 days records by default.
      * <br><br>
      * GET /sapi/v1/capital/withdraw/history
      * <br>
@@ -193,6 +216,7 @@ public class Wallet {
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
      * coin -- optional/string <br>
+     * withdrawOrderId -- optional/string <br>
      * status -- optional/int -- 0(0:Email Sent,1:Cancelled 2:Awaiting Approval 3:Rejected 4:Processing 5:Failure 6:Completed) <br>
      * startTime -- optional/long -- Default: 90 days from current timestamp <br>
      * endTime -- optional/long -- Default: present timestamp <br>
@@ -200,18 +224,21 @@ public class Wallet {
      * limit -- optional/int -- Default:1000, Max:1000 <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#withdraw-history-supporting-network-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#withdraw-history-supporting-network-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/withdraw-history">
+     *     https://developers.binance.com/docs/wallet/capital/withdraw-history</a>
      */
     public String withdrawHistory(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, WITHDRAW_HIST, parameters, HttpMethod.GET, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, WITHDRAW_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String DEPOSIT_ADD = "/sapi/v1/capital/deposit/address";
+    private final String DEPOSIT_ADDRESS = "/sapi/v1/capital/deposit/address";
     /**
      * Fetch deposit address with network.
+     * 
+     * - If network is not send, return with default network of the coin.
+     * - You can get network and isDefault in networkList in the response of Get /sapi/v1/capital/config/getall.
      * <br><br>
-     * GET /sapi/v1/capital/withdraw/history
+     * GET /sapi/v1/capital/deposit/address
      * <br>
      * @param
      * parameters Map of String,Object pair
@@ -219,17 +246,43 @@ public class Wallet {
      * <br><br>
      * coin -- mandatory/string <br>
      * network -- optional/string <br>
+     * amount -- optional/decimal -- mandatory if using LIGHTNING network <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#deposit-address-supporting-network-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#deposit-address-supporting-network-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/deposite-address">
+     *     https://developers.binance.com/docs/wallet/capital/deposite-address</a>
      */
     public String depositAddress(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "coin", String.class);
-        return requestHandler.sendSignedRequest(baseUrl, DEPOSIT_ADD, parameters, HttpMethod.GET, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, DEPOSIT_ADDRESS, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String ACC_STATUS = "/sapi/v1/account/status";
+    private final String DEPOSIT_ADDRESSES = "/sapi/v1/capital/deposit/address/list";
+    /**
+     * Fetch deposit address list with network.
+     * 
+     * - If network is not send, return with default network of the coin.
+     * - You can get network and isDefault in networkList in the response of Get /sapi/v1/capital/config/getall.
+     * <br><br>
+     * GET /sapi/v1/capital/deposit/address/list
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * coin -- mandatory/string <br>
+     * network -- optional/string <br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/fetch-deposit-address-list-with-network">
+     *      https://developers.binance.com/docs/wallet/capital/fetch-deposit-address-list-with-network</a>
+     */
+    public String depositAddresses(Map<String, Object> parameters) {
+        ParameterChecker.checkParameter(parameters, "coin", String.class);
+        return requestHandler.sendSignedRequest(baseUrl, DEPOSIT_ADDRESSES, parameters, HttpMethod.GET, showLimitUsage);
+    }
+
+    private final String ACCOUNT_STATUS = "/sapi/v1/account/status";
     /**
      * Fetch account status detail.
      * <br><br>
@@ -241,16 +294,16 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#account-status-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#account-status-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/account-status">
+     *     https://developers.binance.com/docs/wallet/account/account-status</a>
      */
     public String accountStatus(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, ACC_STATUS, parameters, HttpMethod.GET, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, ACCOUNT_STATUS, parameters, HttpMethod.GET, showLimitUsage);
     }
 
     private final String API_TRADE_STATUS = "/sapi/v1/account/apiTradingStatus";
     /**
-     * Fetch account api trading status detail.
+     * Fetch account API trading status with details.
      * <br><br>
      * GET /sapi/v1/account/apiTradingStatus
      * <br>
@@ -260,8 +313,8 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#account-api-trading-status-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#account-api-trading-status-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/account-api-trading-status">
+     *     https://developers.binance.com/docs/wallet/account/account-api-trading-status</a>
      */
     public String apiTradingStatus(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, API_TRADE_STATUS, parameters, HttpMethod.GET, showLimitUsage);
@@ -269,9 +322,7 @@ public class Wallet {
 
     private final String DUST_LOG = "/sapi/v1/asset/dribblet";
     /**
-     * Fetch account api trading status detail.
-     * <br><br>
-     * GET /sapi/v1/account/apiTradingStatus
+     * GET /sapi/v1/asset/dribblet
      * <br>
      * @param
      * parameters Map of String,Object pair
@@ -281,14 +332,14 @@ public class Wallet {
      * endTime -- optional/long <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#dustlog-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#dustlog-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/dust-log">
+     *     https://developers.binance.com/docs/wallet/asset/dust-log</a>
      */
     public String dustLog(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, DUST_LOG, parameters, HttpMethod.GET, showLimitUsage);
     }
 
-    private final String BNB_CONVERTABLE_ASSETS = "/sapi/v1/asset/dust-btc";
+    private final String BNB_CONVERTIBLE_ASSETS = "/sapi/v1/asset/dust-btc";
     /**
      * POST /sapi/v1/asset/dust-btc
      * <br>
@@ -298,11 +349,11 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-assets-that-can-be-converted-into-bnb-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#get-assets-that-can-be-converted-into-bnb-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/assets-can-convert-bnb">
+     *     https://developers.binance.com/docs/wallet/asset/assets-can-convert-bnb</a>
      */
     public String bnbConvertableAssets(Map<String, Object> parameters) {
-        return requestHandler.sendSignedRequest(baseUrl, BNB_CONVERTABLE_ASSETS, parameters, HttpMethod.POST, showLimitUsage);
+        return requestHandler.sendSignedRequest(baseUrl, BNB_CONVERTIBLE_ASSETS, parameters, HttpMethod.POST, showLimitUsage);
     }
 
     private final String DUST_TRANSFER = "/sapi/v1/asset/dust";
@@ -318,8 +369,8 @@ public class Wallet {
      * asset -- mandatory/array -- The asset being converted. For example: asset=BTC&amp;asset=USDT <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#dust-transfer-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#dust-transfer-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/dust-transfer">
+     *     https://developers.binance.com/docs/wallet/asset/dust-transfer</a>
      */
     public String dustTransfer(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "asset", ArrayList.class);
@@ -342,8 +393,8 @@ public class Wallet {
      * limit -- optional/int -- Default 20, max 500 <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#asset-dividend-record-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#asset-dividend-record-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/assets-divided-record">
+     *     https://developers.binance.com/docs/wallet/asset/assets-divided-record</a>
      */
     public String assetDividend(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, ASSET_DIVIDEND, parameters, HttpMethod.GET, showLimitUsage);
@@ -352,6 +403,8 @@ public class Wallet {
     private final String ASSET_DETAIL = "/sapi/v1/asset/assetDetail";
     /**
      * Fetch details of assets supported on Binance.
+     * 
+     * - Please get network and other deposit or withdraw details from `GET /sapi/v1/capital/config/getall`.
      * <br><br>
      * GET /sapi/v1/asset/assetDetail
      * <br>
@@ -362,8 +415,8 @@ public class Wallet {
      * asset -- optional/string <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#asset-detail-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#asset-detail-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/asset-detail">
+     *     https://developers.binance.com/docs/wallet/asset/asset-detail</a>
      */
     public String assetDetail(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, ASSET_DETAIL, parameters, HttpMethod.GET, showLimitUsage);
@@ -382,8 +435,8 @@ public class Wallet {
      * symbol -- optional/string <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#trade-fee-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#trade-fee-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/trade-fee">
+     *     https://developers.binance.com/docs/wallet/asset/trade-fee</a>
      */
     public String tradeFee(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, TRADE_FEE, parameters, HttpMethod.GET, showLimitUsage);
@@ -399,15 +452,15 @@ public class Wallet {
      * parameters Map of String,Object pair
      *            where String is the name of the parameter and Object is the value of the parameter
      * <br><br>
-     * type -- mandatory/enum <br>
+     * type -- mandatory/enum -- Universal transfer type <br>
      * asset -- mandatory/string <br>
-     * amount -- mandatory/string <br>
+     * amount -- mandatory/decimal <br>
      * fromSymbol -- optional/string <br>
      * toSymbol -- optional/string <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#user-universal-transfer-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#user-universal-transfer-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/user-universal-transfer">
+     *     https://developers.binance.com/docs/wallet/asset/user-universal-transfer</a>
      */
     public String universalTransfer(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "type", String.class);
@@ -432,8 +485,8 @@ public class Wallet {
      * toSymbol -- optional/string <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#query-user-universal-transfer-history-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#query-user-universal-transfer-history-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer">
+     *     https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer</a>
      */
     public String queryUniversalTransfer(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "type", String.class);
@@ -452,8 +505,8 @@ public class Wallet {
      * needBtcValuation -- optional/string -- true or false <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#funding-wallet-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#funding-wallet-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/funding-wallet">
+     *     https://developers.binance.com/docs/wallet/asset/funding-wallet</a>
      */
     public String fundingWallet(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, FUNDING_WALLET, parameters, HttpMethod.POST, showLimitUsage);
@@ -469,8 +522,8 @@ public class Wallet {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-api-key-permission-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#get-api-key-permission-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/account/api-key-permission">
+     *     https://developers.binance.com/docs/wallet/account/api-key-permission</a>
      */
     public String apiPermission(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, API_PERMISSION, parameters, HttpMethod.GET, showLimitUsage);
@@ -490,75 +543,16 @@ public class Wallet {
      * needBtcValuation -- optional/boolean -- 	Whether need btc valuation or not. <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#user-asset-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#user-asset-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/user-assets">
+     *     https://developers.binance.com/docs/wallet/asset/user-assets</a>
      */
     public String getUserAsset(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, USER_ASSET, parameters, HttpMethod.POST, showLimitUsage);
     }
 
-    private final String BUSD_CONVERT = "/sapi/v1/asset/convert-transfer";
-    /**
-     * Convert transfer, convert between BUSD and stablecoins.
-     * <br><br>
-     * POST /sapi/v1/asset/convert-transfer
-     * <br>
-     * @param
-     * parameters Map of String,Object pair
-     *            where String is the name of the parameter and Object is the value of the parameter
-     * <br><br>
-     * clientTranId -- mandatory/string -- The unique user-defined transaction id, min length 20 <br>
-     * asset -- mandatory/string -- The current asset <br>
-     * amount -- mandatory/BigDecimal -- The amount must be positive number <br>
-     * targetAsset -- mandatory/string -- Target asset you want to convert <br>
-     * accountType -- optional/string -- Only MAIN and CARD, default MAIN <br>
-     * recvWindow -- optional/long <br>
-     * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#busd-convert-trade">
-     *     https://binance-docs.github.io/apidocs/spot/en/#busd-convert-trade</a>
-     */
-    public String busdConvert(Map<String, Object> parameters) {
-        ParameterChecker.checkParameter(parameters, "clientTranId", String.class);
-        ParameterChecker.checkParameter(parameters, "asset", String.class);
-        ParameterChecker.checkParameter(parameters, "amount", BigDecimal.class);
-        ParameterChecker.checkParameter(parameters, "targetAsset", String.class);
-
-        return requestHandler.sendSignedRequest(baseUrl, BUSD_CONVERT, parameters, HttpMethod.POST, showLimitUsage);
-    }
-
-    private final String BUSD_CONVERT_HISTORY = "/sapi/v1/asset/convert-transfer/queryByPage";
-    /**
-     * <br><br>
-     * GET /sapi/v1/asset/convert-transfer/queryByPage
-     * <br>
-     * @param
-     * parameters Map of String,Object pair
-     *            where String is the name of the parameter and Object is the value of the parameter
-     * <br><br>
-     * 
-     * startTime -- mandatory/long -- inclusive, unit: ms <br>
-     * endTime -- mandatory/long -- exclusive, unit: ms <br>
-     * tranId -- optional/long -- The transaction id <br>
-     * clientTranId -- optional/string -- The unique user-defined transaction id <br>
-     * asset -- optional/string -- If not sent or null, deducted asset and target asset are returned. <br>
-     * accountType -- optional/string -- MAIN: main account. CARD: funding account. If not sent or null, spot and card wallet will be queried. <br>
-     * current -- optional/integer -- current page, default 1, the min value is 1 <br>
-     * size -- optional/integer -- page size, default 10, the max value is 100 <br>
-     * recvWindow -- optional/long <br>
-     * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#busd-convert-history-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#busd-convert-history-user_data</a>
-     */
-    public String busdConvertHistory(Map<String, Object> parameters) {
-        ParameterChecker.checkParameter(parameters, "startTime", Long.class);
-        ParameterChecker.checkParameter(parameters, "endTime", Long.class);
-
-        return requestHandler.sendSignedRequest(baseUrl, BUSD_CONVERT_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
-    }
-
-
     private final String CLOUD_MINING_HISTORY = "/sapi/v1/asset/ledger-transfer/cloud-mining/queryByPage";
     /**
+     * The query of Cloud-Mining payment and refund history
      * <br><br>
      * GET /sapi/v1/asset/ledger-transfer/cloud-mining/queryByPage
      * <br>
@@ -576,14 +570,90 @@ public class Wallet {
      * size -- optional/integer -- page size, default 10, the max value is 100 <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#get-cloud-mining-payment-and-refund-history-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#get-cloud-mining-payment-and-refund-history-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/cloud-mining-payment-and-refund-history">
+     *     https://developers.binance.com/docs/wallet/asset/cloud-mining-payment-and-refund-history</a>
      */
     public String cloudMiningHistory(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "startTime", Long.class);
         ParameterChecker.checkParameter(parameters, "endTime", Long.class);
 
         return requestHandler.sendSignedRequest(baseUrl, CLOUD_MINING_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
+    }
+
+    private final String APPLY_ONE_CLICK_ARRIVAL_DEPOSIT = "/sapi/v1/capital/deposit/credit-apply";
+    /**
+     * Apply deposit credit for expired address (One click arrival)
+     * 
+     * <br><br>
+     * POST /sapi/v1/capital/deposit/credit-apply
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * depositId -- optional/long -- Deposit record ID, priority use <br>
+     * txId -- optional/string -- Deposit txId, used when depositId is not specified <br>
+     * subAccountId -- optional/long <br>
+     * subUserId -- optional/long <br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/wallet/capital/one-click-arrival-deposite-apply">
+     *     https://developers.binance.com/docs/wallet/capital/one-click-arrival-deposite-apply</a>
+     */
+    public String applyOneClickArrivalDeposit(Map<String, Object> parameters) {
+        return requestHandler.sendSignedRequest(baseUrl, APPLY_ONE_CLICK_ARRIVAL_DEPOSIT, parameters, HttpMethod.POST, showLimitUsage);
+    }
+
+    private final String WALLET_BALANCE = "/sapi/v1/asset/wallet/balance";
+    /**
+     * Query User Wallet Balance
+     * 
+     * <br><br>
+     * GET /sapi/v1/asset/wallet/balance
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/query-user-wallet-balance">
+     *     https://developers.binance.com/docs/wallet/asset/query-user-wallet-balance</a>
+     */
+    public String walletBalance(Map<String, Object> parameters) {
+        return requestHandler.sendSignedRequest(baseUrl, WALLET_BALANCE, parameters, HttpMethod.GET, showLimitUsage);
+    }
+
+    private final String QUERY_USER_DELEGATION_HISTORY = "/sapi/v1/asset/custody/transfer-history";
+    /**
+     * Query User Delegation History
+     * 
+     * You need to open Enable Spot and Margin Trading permission for the API Key which requests this endpoint
+     * 
+     * <br><br>
+     * GET /sapi/v1/asset/custody/transfer-history
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * email -- mandatory/string <br>
+     * startTime -- mandatory/long <br>
+     * endTime -- mandatory/long <br>
+     * type -- optional/enum -- "Delegate" or "Undelegate"<br>
+     * asset -- optional/string <br>
+     * current -- optional/integer -- Current querying page. Start from 1. Default:1 <br>
+     * size -- optional/integer -- Default:10 Max:100 <br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/wallet/asset/query-user-delegation">
+     *     https://developers.binance.com/docs/wallet/asset/query-user-delegation</a>
+     */
+    public String delegationHistory(Map<String, Object> parameters) {
+        ParameterChecker.checkParameter(parameters, "email", String.class);
+        ParameterChecker.checkParameter(parameters, "startTime", Long.class);
+        ParameterChecker.checkParameter(parameters, "endTime", Long.class);
+        return requestHandler.sendSignedRequest(baseUrl, QUERY_USER_DELEGATION_HISTORY, parameters, HttpMethod.GET, showLimitUsage);
     }
 
 }

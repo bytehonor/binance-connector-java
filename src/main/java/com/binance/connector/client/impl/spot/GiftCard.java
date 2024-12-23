@@ -12,7 +12,7 @@ import com.binance.connector.client.utils.signaturegenerator.SignatureGenerator;
 /**
  * <h2>Gift Card Endpoints</h2>
  * All endpoints under the
- * <a href="https://binance-docs.github.io/apidocs/spot/en/#binance-code-endpoints">Gift Card Endpoint</a>
+ * <a href="https://developers.binance.com/docs/gift_card/Introduction">Gift Card Endpoint</a>
  * section of the API documentation will be implemented in this class.
  * <br>
  * Response will be returned in <i>String format</i>.
@@ -53,8 +53,8 @@ public class GiftCard {
      * amount -- mandatory/double -- The amount of the coin <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#create-a-binance-code-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#create-a-binance-code-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Create-a-single-token-gift-card">
+     *     https://developers.binance.com/docs/gift_card/market-data/Create-a-single-token-gift-card</a>
      */
     public String createCode(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "token", String.class);
@@ -82,8 +82,8 @@ public class GiftCard {
      *                                  To protect user data privacy, you may choose to transfer the user id in any desired format (max. 400 characters). <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#redeem-a-binance-code-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#redeem-a-binance-code-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Redeem-a-Binance-Gift-Card">
+     *     https://developers.binance.com/docs/gift_card/market-data/Redeem-a-Binance-Gift-Card</a>
      */
     public String redeemCode(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "code", String.class);
@@ -105,8 +105,8 @@ public class GiftCard {
      * referenceNo -- mandatory/string -- reference number <br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#verify-a-binance-code-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#verify-a-binance-code-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Verify-Binance-Gift-Card-by-Gift-Card-Number">
+     *     https://developers.binance.com/docs/gift_card/market-data/Verify-Binance-Gift-Card-by-Gift-Card-Number</a>
      */
     public String verify(Map<String, Object> parameters) {
         ParameterChecker.checkParameter(parameters, "referenceNo", String.class);
@@ -125,10 +125,67 @@ public class GiftCard {
      * <br><br>
      * recvWindow -- optional/long <br>
      * @return String
-     * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#fetch-rsa-public-key-user_data">
-     *     https://binance-docs.github.io/apidocs/spot/en/#fetch-rsa-public-key-user_data</a>
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Fetch-RSA-Public-Key">
+     *     https://developers.binance.com/docs/gift_card/market-data/Fetch-RSA-Public-Key</a>
      */
     public String rsaPublicKey(Map<String, Object> parameters) {
         return requestHandler.sendSignedRequest(baseUrl, RSA_PUB, parameters, HttpMethod.GET, showLimitUsage);
+    }
+
+    private final String CREATE_DUAL_TOKEN_CODE = "/sapi/v1/giftcard/buyCode";
+    /**
+     * This API is for buying a fixed-value Binance Code, which means your Binance Code will be redeemable to a token that is different to the token that you are paying in. If the token you’re paying and the redeemable token are the same, please use the Create Binance Code endpoint.
+     * You can use supported crypto currency or fiat token as baseToken to buy Binance Code that is redeemable to your chosen faceToken.
+     * Once successfully purchased, the amount of baseToken would be deducted from your funding wallet.
+     * 
+     * To get started with, please make sure:
+     * - You have a Binance account
+     * - You have passed kyc
+     * - You have a sufficient balance in your Binance funding wallet
+     * - You need Enable Withdrawals for the API Key which requests this endpoint.
+     * 
+     * <br><br>
+     * POST /sapi/v1/giftcard/buyCode
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * baseToken -- mandatory/string -- The token you want to pay, example BUSD <br>
+     * faceToken -- mandatory/string -- The token you want to buy, example BNB. If faceToken = baseToken, it's the same as createCode endpoint. <br>
+     * baseTokenAmount -- mandatory/double -- The base token asset quantity, example 1.002 <br>
+     * discount -- optional/double -- The discount rate, example 0.1 <br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Create-a-dual-token-gift-card">
+     *      https://developers.binance.com/docs/gift_card/market-data/Create-a-dual-token-gift-card</a>
+     */
+    public String createDualTokensCode(Map<String, Object> parameters) {
+        ParameterChecker.checkParameter(parameters, "baseToken", String.class);
+        ParameterChecker.checkParameter(parameters, "faceToken", String.class);
+        ParameterChecker.checkParameter(parameters, "baseTokenAmount", Double.class);
+        return requestHandler.sendSignedRequest(baseUrl, CREATE_DUAL_TOKEN_CODE, parameters, HttpMethod.POST, showLimitUsage);
+    }
+
+    private final String TOKEN_LIMIT = "/sapi/v1/giftcard/buyCode/token-limit";
+    /**
+     * This API is to help you verify which tokens are available for you to purchase fixed-value gift cards.
+     * 
+     * <br><br>
+     * GET /sapi/v1/giftcard/buyCode/token-limit
+     * <br>
+     * @param
+     * parameters Map of String,Object pair
+     *            where String is the name of the parameter and Object is the value of the parameter
+     * <br><br>
+     * baseToken -- mandatory/string -- The token you want to pay, example BUSD <br>
+     * recvWindow -- optional/long -- The value cannot be greater than 60000 <br>
+     * @return String
+     * @see <a href="https://developers.binance.com/docs/gift_card/market-data/Fetch-Token-Limit">
+     *      https://developers.binance.com/docs/gift_card/market-data/Fetch-Token-Limit</a>
+     */
+    public String tokensLimit(Map<String, Object> parameters) {
+        ParameterChecker.checkParameter(parameters, "baseToken", String.class);
+        return requestHandler.sendSignedRequest(baseUrl, TOKEN_LIMIT, parameters, HttpMethod.GET, showLimitUsage);
     }
 }

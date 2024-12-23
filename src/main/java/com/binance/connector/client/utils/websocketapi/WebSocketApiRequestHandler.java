@@ -33,12 +33,13 @@ public class WebSocketApiRequestHandler {
     }
 
     public void apiRequest(String method, JSONObject parameters) {
-        this.request(RequestType.WITH_API_KEY, method, parameters);
-
+        RequestType requestType = this.connection.getSessionStatus() ? RequestType.PUBLIC : RequestType.WITH_API_KEY;
+        this.request(requestType, method, parameters);
     }
 
     public void signedRequest(String method, JSONObject parameters) {
-        this.request(RequestType.SIGNED, method, parameters);
+        RequestType requestType = this.connection.getSessionStatus() ? RequestType.PUBLIC : RequestType.SIGNED;
+        this.request(requestType, method, parameters);
     }
 
     public void request(RequestType requestType, String method, JSONObject parameters) {
@@ -58,7 +59,9 @@ public class WebSocketApiRequestHandler {
             case SIGNED:
                 ParameterChecker.checkParameterType(this.apiKey, String.class, "apiKey");
                 parameters = JSONParser.addKeyValue(parameters, "apiKey", this.apiKey);
-                parameters.put("timestamp", UrlBuilder.buildTimestamp());
+                if (!parameters.has("timestamp")) {
+                    parameters.put("timestamp", UrlBuilder.buildTimestamp());
+                }
 
                 // signature
                 ParameterChecker.checkParameterType(this.signatureGenerator, SignatureGenerator.class, "signatureGenerator");
